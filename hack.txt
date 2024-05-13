@@ -1,0 +1,72 @@
+#Note: The openai-python library support for Azure OpenAI is in preview.
+#Note: This code sample requires OpenAI Python library version 1.0.0 or higher.
+import os
+from openai import AzureOpenAI
+
+client = AzureOpenAI(
+  azure_endpoint = "https://cbahackai-openai-aueast.openai.azure.com/", 
+  api_key=os.getenv("AZURE_OPENAI_KEY"),  
+  api_version="2024-02-15-preview"
+)
+
+message_text = [{"role":"system","content":"As a risk analyst, your task is to vet loan applications and determine whether they can be approved. The loan application includes information about the applicant’s age, country of residence, and requested loan amount. To verify eligibility, consider the following conditions:\n1.\tThe applicant must be a resident of Australia.\n2.\tThe applicant’s age must be greater than 18.\n3.\tThe requested loan amount should be less than $100,000.\nTake time to evaluate all the above conditions.\n Approve the loan only if all of these conditions are satisfied.\n"},{"role":"user","content":"The user input is given below,\nAge = 16\nCountry = Australia\nLoan Amount = $900"}]
+
+completion = client.chat.completions.create(
+  model="shalini", # model = "deployment_name"
+  messages = message_text,
+  temperature=0,
+  max_tokens=800,
+  top_p=1,
+  frequency_penalty=0,
+  presence_penalty=0,
+  stop=None
+)
+
+curl "https://cbahackai-openai-aueast.openai.azure.com/openai/deployments/shalini/chat/completions?api-version=2024-02-15-preview" \
+  -H "Content-Type: application/json" \
+  -H "api-key: e4b7b0b70608492c828d331010127a16" \
+  -d "{
+  \"messages\": [{\"role\":\"system\",\"content\":\"As a risk analyst, your task is to vet loan applications and determine whether they can be approved. The loan application includes information about the applicant’s age, country of residence, and requested loan amount. To verify eligibility, consider the following conditions:\n1.\tThe applicant must be a resident of Australia.\n2.\tThe applicant’s age must be greater than 18.\n3.\tThe requested loan amount should be less than $100,000.\nTake time to evaluate all the above conditions.\n Approve the loan only if all of these conditions are satisfied.\n\"},{\"role\":\"user\",\"content\":\"The user input is given below,\nAge = 16\nCountry = Australia\nLoan Amount = $900\"}],
+  \"max_tokens\": 800,
+  \"temperature\": 0,
+  \"frequency_penalty\": 0,
+  \"presence_penalty\": 0,
+  \"top_p\": 1,
+  \"stop\": null
+}"
+
+
+
+
+JAVASCRIPT CODE
+
+
+const url = 'https://cbahackai-openai-aueast.openai.azure.com/openai/deployments/shalini/chat/completions?api-version=2024-02-15-preview';
+
+const data = `{
+  "messages": [{"role":"system","content":"As a risk analyst, your task is to vet loan applications and determine whether they can be approved. The loan application includes information about the applicant’s age, country of residence, and requested loan amount. To verify eligibility, consider the following conditions:n1.tThe applicant must be a resident of Australia.n2.tThe applicant’s age must be greater than 18.n3.tThe requested loan amount should be less than 100000.nTake time to evaluate all the above conditions.n Approve the loan only if all of these conditions are satisfied.n"},{"role":"user","content":"user input - {country: Australia, age: 12, loan_amount: 1000}"}],
+  "max_tokens": 800,
+  "temperature": 0,
+  "frequency_penalty": 0,
+  "presence_penalty": 0,
+  "top_p": 1,
+  "stop": null
+}`;
+
+const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'api-key': 'e4b7b0b70608492c828d331010127a16',
+    },
+    body: data,
+});
+
+const text = await response.text();
+
+console.log(text);
+
+
+
+
+

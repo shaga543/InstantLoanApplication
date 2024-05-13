@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="style.css">
+    <title>Ludiflex | Login & Registration</title>
+</head>
+<body>
+ <div class="wrapper">
+    <nav class="nav">
+        <div class="nav-logo">
+            <p>Common Wealth Bank Of Australia</p>
+        </div>
+        <div class="nav-menu" id="navMenu">
+            <ul>
+  <!--              <li><a href="#" class="link active">Home</a></li> -->
+ <!--               <li><a href="#" class="link">Blog</a></li>
+                <li><a href="#" class="link">Services</a></li>
+                <li><a href="#" class="link">About</a></li> -->
+            </ul>
+        </div>
+ <!--       <div class="nav-button">
+            <button class="btn white-btn" id="loginBtn" onclick="login()">Sign In</button>
+            <button class="btn" id="registerBtn" onclick="register()">Sign Up</button>
+        </div> -->
+        <div class="nav-menu-btn">
+            <i class="bx bx-menu" onclick="myMenuFunction()"></i>
+        </div>
+    </nav>
+
+<!----------------------------- Form box ----------------------------------->    
+    <div class="form-box">
+        
+        <!------------------- login form -------------------------->
+
+        <div class="login-container" id="login">
+            <div class="top">
+                <span>Fill the below fields to apply loan instantly! <!-- <a href="#" onclick="register()">Sign Up</a>--></span>
+                <header>Let's get started!</header>
+            </div>
+            <form method="post" onsubmit="formValidation(event)">
+            <div class="input-box">
+                <input type="text" class="input-field" placeholder="Name" name="name">
+                <i class="bx bx-user"></i>
+            </div>
+            <div class="input-box">
+                <input type="text" class="input-field" placeholder="Age" name="age">
+                <i class="bx bx-lock-alt"></i>
+            </div>
+            <div class="input-box">
+                <input type="text" class="input-field" placeholder="Country" name="country">
+                <i class="bx bx-lock-alt"></i>
+            </div>
+            <div class="input-box">
+                <input type="text" class="input-field" placeholder="Loan Amount" name="loanAmount">
+                <i class="bx bx-lock-alt"></i>
+            </div>
+            <div class="input-box">
+                <input type="submit" class="submit" value="Apply Loan">
+            </div></form>
+         <!--   <div class="two-col">
+                <div class="one">
+                    <input type="checkbox" id="login-check">
+                    <label for="login-check"> Remember Me</label>
+                </div>
+                <div class="two">
+                    <label><a href="#">Forgot password?</a></label>
+                </div>
+            </div>-->
+        </div>
+
+        <!------------------- registration form -------------------------->
+ <!--       <div class="register-container" id="register">
+            <div class="top">
+                <span>Have an account? <a href="#" onclick="login()">Login</a></span>
+                <header>Sign Up</header>
+            </div>
+            <div class="two-forms">
+                <div class="input-box">
+                    <input type="text" class="input-field" placeholder="Firstname">
+                    <i class="bx bx-user"></i>
+                </div>
+                <div class="input-box">
+                    <input type="text" class="input-field" placeholder="Lastname">
+                    <i class="bx bx-user"></i>
+                </div>
+            </div>
+            <div class="input-box">
+                <input type="text" class="input-field" placeholder="Email">
+                <i class="bx bx-envelope"></i>
+            </div>
+            <div class="input-box">
+                <input type="password" class="input-field" placeholder="Password">
+                <i class="bx bx-lock-alt"></i>
+            </div>
+            <div class="input-box">
+                <input type="submit" class="submit" value="Register">
+            </div>
+            <div class="two-col">
+                <div class="one">
+                    <input type="checkbox" id="register-check">
+                    <label for="register-check"> Remember Me</label>
+                </div>
+                <div class="two">
+                    <label><a href="#">Terms & conditions</a></label>
+                </div>
+            </div>
+        </div> -->
+    </div>
+</div>   
+
+<script>
+
+async function fetchModelResponse(age, country, loanAmount) {
+    const url = 'https://cbahackai-openai-aueast.openai.azure.com/openai/deployments/shalini/chat/completions?api-version=2024-02-15-preview';
+
+var data = `{
+  "messages": [{"role":"system","content":"As a risk analyst, your task is to vet loan applications and determine whether they can be approved. The loan application includes information about the applicant’s age, country of residence, and requested loan amount. To verify eligibility, consider the following conditions:\\n1.tThe applicant must be a resident of Australia.\\n2.tThe applicant’s age must be greater than 18.\\n3.tThe requested loan amount should be less than 100000.\\nTake time to evaluate all the above conditions.\\n Approve the loan only if all of these conditions are satisfied.\\n"},{"role":"user","content":"user input - {country: ${country}, age: ${age}, loan_amount: ${loanAmount}"}],
+  "max_tokens": 800,
+  "temperature": 0,
+  "frequency_penalty": 0,
+  "presence_penalty": 0,
+  "top_p": 1,
+  "stop": null
+}`;
+
+const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'api-key': 'e4b7b0b70608492c828d331010127a16',
+    },
+    body: data,
+});
+
+const text = await response.text();
+var choices = JSON.parse(text).choices
+var final_message = choices[0].message.content
+
+console.log(text);
+        alert(final_message);
+}
+        function formValidation(event) {
+        event.preventDefault();
+        let name = event.target.name.value;
+        if (name.length === 0) {
+            alert("Enter a valid name");
+            return false;
+        }
+        let age = parseInt(event.target.age.value);
+        if (age < 18) {
+            alert("Age should be greater than 18");
+            return false;
+        }
+        let country = event.target.country.value;
+        if (country.length === 0) {
+            alert("Enter a valid country name");
+            return false;
+        }
+        let loanAmount = parseInt(event.target.loanAmount.value);
+        if (loanAmount < 0) {
+            alert("Enter a valid loan amount");
+            return false;
+        }
+        fetchModelResponse(age, country, loanAmount);
+      
+    }
+</script>
+<script>
+   
+   function myMenuFunction() {
+    var i = document.getElementById("navMenu");
+
+    if(i.className === "nav-menu") {
+        i.className += " responsive";
+    } else {
+        i.className = "nav-menu";
+    }
+   }
+ 
+</script>
+
+<script>
+
+    var a = document.getElementById("loginBtn");
+    var b = document.getElementById("registerBtn");
+    var x = document.getElementById("login");
+    var y = document.getElementById("register");
+
+    function login() {
+        x.style.left = "4px";
+        y.style.right = "-520px";
+        a.className += " white-btn";
+        b.className = "btn";
+        x.style.opacity = 1;
+        y.style.opacity = 0;
+    }
+
+    function register() {
+        x.style.left = "-510px";
+        y.style.right = "5px";
+        a.className = "btn";
+        b.className += " white-btn";
+        x.style.opacity = 0;
+        y.style.opacity = 1;
+    }
+
+</script>
+
+</body>
+</html>
